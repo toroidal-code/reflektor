@@ -16,11 +16,12 @@ set( CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELEASE} -g" )
 
 set( CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake )
 
-find_package(PortAudio)
+#find_package(PortAudio)
+#
+#if( NOT PORTAUDIO_FOUND )
+#	message(FATAL_ERROR "PortAudio can't be found.")
+#endif()
 
-if( NOT PORTAUDIO_FOUND )
-	message(FATAL_ERROR "PortAudio can't be found.")
-endif()
 
 find_package(FFTW)
 

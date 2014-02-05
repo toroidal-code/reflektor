@@ -42,6 +42,7 @@
  * license above.
  */
 
+#include <stdlib.h>
 #include <stdio.h>
 #define _USE_MATH_DEFINES
 #define M_PI 3.14159265358979323846
@@ -104,41 +105,35 @@ static int fftwCallback(const void *inputBuffer, void *outputBuffer,
   if (inputBuffer == NULL) {
     gNumNoInputs += 1;
   } else {
-    printf("BEFORE\n");
-    for (i = 0; i < framesPerBuffer; i++) {
-      printf("%d: %x: %f, ", i, input_ptr_ary[0], left_in[i]);
-      printf("%x: %f\n", input_ptr_ary[1], right_in[i]);
-    }
+    // printf("BEFORE\n");
+    // for (i = 0; i < framesPerBuffer; i++) {
+    //   printf("%d: %x: %f, ", i, left_in + i, left_in[i]);
+    //   printf("%x: %f\n", right_in +i, right_in[i]);
+    // }
   }
 
   /* Hanning window function */
-  // for (i = 0; i < (framesPerBuffer /2 ) -1; i++) {
   for (i = 0; i < framesPerBuffer; i++) {
-    double multiplier = 0.5 * (1  -cos(2 * M_PI * i / (1 - framesPerBuffer)));
+    double multiplier = 0.5 * (1  - cos(2 * M_PI * i / (framesPerBuffer - 1)));
     left_in[i] = multiplier * left_in[i];
     right_in[i] = multiplier * right_in[i];
   }
 
-  printf("AFTER\n");
-  for (i = 0; i < framesPerBuffer; i++) {
-    printf("%x: %f, ", input_ptr_ary[0], left_in[i]);
-    printf("%x: %f\n", input_ptr_ary[1], right_in[i]);
-  }
-
   fftwf_execute(lp);
   fftwf_execute(rp);
-
-  printf("Max: %dHz\n", max_array(left_out, framesPerBuffer));
-  for (i = 0; i < (framesPerBuffer / 2) - 1;
+  
+//  printf("Max: %dHz\n", max_array(left_out, framesPerBuffer));
+  printf("[");
+  for (i = 0; 
+       i < (framesPerBuffer / 2) - 1;
        i++) { // second half of bins are useless
-    printf("%-5u Hz: L: %f + i%f, ",
-           i * SAMPLE_RATE / FRAMES_PER_BUFFER, creal(left_out[i]),
-           cimag(left_out[i]));
-    /* left  - clean */
-    printf("R: %f + i%f\n", creal(right_out[i]), cimag(right_out[i]));
-    /*  right  - clean */
+    // printf("%-5u Hz: L: %f + i%f, ",
+    //        i * SAMPLE_RATE / FRAMES_PER_BUFFER, creal(left_out[i]),
+    //        cimag(left_out[i]));
+    // printf("R: %f + i%f\n", creal(right_out[i]), cimag(right_out[i]))
+    printf("(%u, %f),", i * SAMPLE_RATE / FRAMES_PER_BUFFER, creal(right_out[i]));
   }
-
+  printf("]\n");
   return paContinue;
 }
 
