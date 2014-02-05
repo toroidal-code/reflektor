@@ -56,7 +56,7 @@
 */
 #define SAMPLE_RATE (44100)
 #define PA_SAMPLE_TYPE paFloat32 | paNonInterleaved;
-#define FRAMES_PER_BUFFER (64)
+#define FRAMES_PER_BUFFER (1024)
 
 static int gNumNoInputs = 0;
 /* This routine will be called by the PortAudio engine when audio is needed.
@@ -86,8 +86,8 @@ static int fftwCallback(const void *inputBuffer, void *outputBuffer,
                         const PaStreamCallbackTimeInfo *timeInfo,
                         PaStreamCallbackFlags statusFlags, void *userData) {
   float **input_ptr_ary = (float **)inputBuffer;
-  float *left_in = (float *)(input_ptr_ary[0]);
-  float *right_in = (float *)(input_ptr_ary[1]);
+  float *left_in = input_ptr_ary[0];
+  float *right_in = input_ptr_ary[1];
 
   if (lp == NULL && rp == NULL) {
     lp = fftwf_plan_dft_r2c_1d(FRAMES_PER_BUFFER, left_in, left_out,
@@ -106,7 +106,7 @@ static int fftwCallback(const void *inputBuffer, void *outputBuffer,
   } else {
     printf("BEFORE\n");
     for (i = 0; i < framesPerBuffer; i++) {
-      printf("%x: %f, ", input_ptr_ary[0], left_in[i]);
+      printf("%d: %x: %f, ", i, input_ptr_ary[0], left_in[i]);
       printf("%x: %f\n", input_ptr_ary[1], right_in[i]);
     }
   }
@@ -124,7 +124,7 @@ static int fftwCallback(const void *inputBuffer, void *outputBuffer,
     printf("%x: %f, ", input_ptr_ary[0], left_in[i]);
     printf("%x: %f\n", input_ptr_ary[1], right_in[i]);
   }
-  exit(0);
+
   fftwf_execute(lp);
   fftwf_execute(rp);
 
