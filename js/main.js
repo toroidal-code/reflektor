@@ -29,8 +29,8 @@ window.addEventListener("load", function () {
 
 	window.graph = new Rickshaw.Graph( {
 		element: document.querySelector("#chart"), 
-		width: 1920, 
-		height: 1080, 
+		width: 1800, 
+		height: 980, 
 		series: [{
 			color: 'steelblue',
 			data: [ 
