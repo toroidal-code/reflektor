@@ -1,4 +1,24 @@
 window.addEventListener("load", function () {
+	var chart;
+	var selected = d3.select("#chart svg")
+	nv.addGraph(function (){ 
+
+		chart = nv.models.lineChart();
+		
+		chart.xAxis
+		.axisLabel('Frequency (Hz)')
+		.tickFormat(d3.format(',r'));
+
+		chart.yAxis
+		.axisLabel('Magnitude')
+		.tickFormat(d3.format('.02f'));
+
+		chart.forceY([0, 150]);
+
+		nv.utils.windowResize(function() { selected.call(chart); });
+	})
+
+
 	var host = "ws://localhost:7681/";
 	try {
 		var socket = new WebSocket(host);
@@ -10,10 +30,15 @@ window.addEventListener("load", function () {
 
 		socket.onmessage = function (messageEvent) {
 			var object = JSON.parse(messageEvent.data);
-			console.log(object);
-			graph.series[0].data = object;
-			console.log("updated");
-			window.requestAnimationFrame(function () {graph.render();});
+			//console.log(object);
+			selected.datum([{ 
+				values : object,
+				color: '#0000FF',
+				key: 'Wave'
+			}])
+			//.transition()
+			//.duration(10)
+			.call(chart);
 		};
 
 		 socket.onerror = function (errorEvent) {
@@ -26,22 +51,5 @@ window.addEventListener("load", function () {
 		 	console.log(closeEvent);
 		 };
 	} catch (exception) { console.log(exception); }
-
-	window.graph = new Rickshaw.Graph( {
-		element: document.querySelector("#chart"), 
-		width: 1920, 
-		height: 1080, 
-		series: [{
-			color: 'steelblue',
-			data: [ 
-			{ x: 0, y: 40 }, 
-			{ x: 1, y: 49 }, 
-			{ x: 2, y: 38 }, 
-			{ x: 3, y: 30 }, 
-			{ x: 4, y: 32 } ]
-		}]
-	});
-
-	graph.render();
 });
 
