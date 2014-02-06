@@ -9,10 +9,10 @@ if (NOT CMAKE_BUILD_TYPE)
 endif()
 
 # Some compiler flags
-SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11" )
-set( CMAKE_C_FLAGS_DEBUG "-O2 -Wall -Wextra -pedantic -g -Wno-unused-parameter" )
-set( CMAKE_C_FLAGS_RELEASE "-O2 -Wall -fomit-frame-pointer -DNDEBUG" )
-set( CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELEASE} -g" )
+SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11" )
+set( CMAKE_CXX_FLAGS_DEBUG "-O2 -Wall -Wextra -pedantic -g -Wno-unused-parameter" )
+set( CMAKE_CXX_FLAGS_RELEASE "-O2 -Wall -fomit-frame-pointer -DNDEBUG" )
+set( CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELEASE} -g" )
 
 set( CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake )
 
@@ -36,7 +36,7 @@ find_package(FFTW)
 # set(reflektor_SOURCES 
 
 
-add_executable(reflektor src/reflektor.c)
+add_executable(reflektor src/reflektor.cpp)
 target_link_libraries(reflektor portaudio)
 target_link_libraries(reflektor m)
 target_link_libraries(reflektor fftw3f)
